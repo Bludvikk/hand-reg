@@ -43,8 +43,11 @@ model User {
   severity       Reference @relation("user_severityIdToReference", fields: [severityId], references: [id])
   severityId     Int
   hashedPassword String
+  hashedRt       String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt()
+
+  @@map("users")
 }
 
 model Reference {
