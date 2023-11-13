@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator zod {
+  provider                         = "npx zod-prisma-types"
+  output                           = "../types" // default is ./generated/zod
+  useMultipleFiles                 = false // default is false
+  writeBarrelFiles                 = false // default is true
+  createInputTypes                 = false // default is true
+  createModelTypes                 = true // default is true
+  addInputTypeValidation           = false // default is true
+  addIncludeType                   = false // default is true
+  addSelectType                    = false // default is true
+  validateWhereUniqueInput         = false // default is false
+  createOptionalDefaultValuesTypes = false // default is false
+  createRelationValuesTypes        = false // default is false
+  createPartialTypes               = false // default is false
+  useDefaultValidators             = false // default is true
+  coerceDate                       = false // default is true
+  writeNullishInModelTypes         = true // default is false
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @unique @default(uuid())
+  firstName      String    @db.VarChar(30)
+  lastName       String    @db.VarChar(30)
+  gender         String
+  weight         String
+  phone          String
+  email          String    @unique
+  address        String
+  hematologist   String[]
+  type           Reference @relation("user_typeIdToReference", fields: [typeId], references: [id])
+  typeId         Int
+  severity       Reference @relation("user_severityIdToReference", fields: [severityId], references: [id])
+  severityId     Int
+  hashedPassword String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt()
+}
+
+model Reference {
+  id              Int       @id @default(autoincrement())
+  code            String    @unique
+  name            String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now()) @updatedAt
+  deletedAt       DateTime?
+  isShow          Boolean   @default(true)
+  isDefault       Boolean   @default(false)
+  entityId        Int
+  entity          Entity    @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  user_typeId     User[]    @relation("user_typeIdToReference")
+  user_severityId User[]    @relation("user_severityIdToReference")
+}
+
+model Entity {
+  id        Int         @id @default(autoincrement())
+  code      String      @unique
+  name      String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now()) @updatedAt
+  deletedAt DateTime?
+  isShow    Boolean     @default(true)
+  isDefault Boolean     @default(false)
+  isParent  Boolean     @default(false)
+  parentId  Int?
+  fieldProp String
+  parent    Entity?     @relation("entityToEntity", fields: [parentId], references: [id])
+  entity    Entity[]    @relation("entityToEntity")
+  reference Reference[]
+}
