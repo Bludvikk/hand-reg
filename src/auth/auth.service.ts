@@ -29,7 +29,7 @@ export class AuthService {
           hashedPassword,
         },
       })
-      .catch((error) => {
+      .catch((error: { code: string; }) => {
         if (error instanceof PrismaClientKnownRequestError) {
           if (error.code === 'P2002') {
             throw new ForbiddenException(

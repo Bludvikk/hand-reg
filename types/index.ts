@@ -12,7 +12,7 @@ import type { Prisma } from '@prisma/client';
 
 export const TransactionIsolationLevelSchema = z.enum(['ReadUncommitted','ReadCommitted','RepeatableRead','Serializable']);
 
-export const UserScalarFieldEnumSchema = z.enum(['id','firstName','lastName','gender','weight','phone','email','address','hematologist','typeId','severityId','hashedPassword','hashedRt','createdAt','updatedAt']);
+export const UserScalarFieldEnumSchema = z.enum(['id','firstName','lastName','gender','weight','age','city','phone','email','address','hematologistId','typeId','severityId','hashedPassword','hashedRt','createdAt','updatedAt']);
 
 export const ReferenceScalarFieldEnumSchema = z.enum(['id','code','name','createdAt','updatedAt','deletedAt','isShow','isDefault','entityId']);
 
@@ -35,14 +35,16 @@ export const UserSchema = z.object({
   id: z.string(),
   firstName: z.string(),
   lastName: z.string(),
-  gender: z.string(),
-  weight: z.string(),
-  phone: z.string(),
+  gender: z.string().nullish(),
+  weight: z.string().nullish(),
+  age: z.number().nullish(),
+  city: z.string().nullish(),
+  phone: z.string().nullish(),
   email: z.string(),
-  address: z.string(),
-  hematologist: z.string().array(),
-  typeId: z.number(),
-  severityId: z.number(),
+  address: z.string().nullish(),
+  hematologistId: z.number().nullish(),
+  typeId: z.number().nullish(),
+  severityId: z.number().nullish(),
   hashedPassword: z.string(),
   hashedRt: z.string().nullish(),
   createdAt: z.date(),

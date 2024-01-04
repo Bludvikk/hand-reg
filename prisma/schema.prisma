@@ -32,16 +32,19 @@ model User {
   id             String    @unique @default(uuid())
   firstName      String    @db.VarChar(30)
   lastName       String    @db.VarChar(30)
-  gender         String
-  weight         String
-  phone          String
+  gender         String?
+  weight         String?
+  age            Int?
+  city           String?
+  phone          String?
   email          String    @unique
-  address        String
-  hematologist   String[]
-  type           Reference @relation("user_typeIdToReference", fields: [typeId], references: [id])
-  typeId         Int
-  severity       Reference @relation("user_severityIdToReference", fields: [severityId], references: [id])
-  severityId     Int
+  address        String?
+  hematologist   Reference? @relation("user_hematologistIdToReference", fields: [hematologistId], references: [id])
+  hematologistId Int?
+  type           Reference? @relation("user_typeIdToReference", fields: [typeId], references: [id])
+  typeId         Int?
+  severity       Reference? @relation("user_severityIdToReference", fields: [severityId], references: [id])
+  severityId     Int?
   hashedPassword String
   hashedRt       String?
   createdAt      DateTime  @default(now())
@@ -51,18 +54,19 @@ model User {
 }
 
 model Reference {
-  id              Int       @id @default(autoincrement())
-  code            String    @unique
-  name            String
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @default(now()) @updatedAt
-  deletedAt       DateTime?
-  isShow          Boolean   @default(true)
-  isDefault       Boolean   @default(false)
-  entityId        Int
-  entity          Entity    @relation(fields: [entityId], references: [id], onDelete: Cascade)
-  user_typeId     User[]    @relation("user_typeIdToReference")
-  user_severityId User[]    @relation("user_severityIdToReference")
+  id                  Int       @id @default(autoincrement())
+  code                String    @unique
+  name                String
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @default(now()) @updatedAt
+  deletedAt           DateTime?
+  isShow              Boolean   @default(true)
+  isDefault           Boolean   @default(false)
+  entityId            Int
+  entity              Entity    @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  user_typeId         User[]    @relation("user_typeIdToReference")
+  user_severityId     User[]    @relation("user_severityIdToReference")
+  user_hematologistId User[]    @relation("user_hematologistIdToReference")
 }
 
 model Entity {
